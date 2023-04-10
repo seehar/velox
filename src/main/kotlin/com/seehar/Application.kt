@@ -1,9 +1,6 @@
 package com.seehar
 
-import com.seehar.plugins.configureDatabases
-import com.seehar.plugins.configureHTTP
-import com.seehar.plugins.configureRouting
-import com.seehar.plugins.configureSerialization
+import com.seehar.plugins.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.cors.routing.*
@@ -17,6 +14,7 @@ fun Application.module() {
     configureSerialization()
     configureDatabases()
     configureRouting()
+    configureScheduler()
     install(CORS) {
         allowMethod(HttpMethod.Options)
         allowMethod(HttpMethod.Put)

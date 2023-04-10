@@ -4,8 +4,41 @@ info:
   description: "velox API"
   version: "1.0.0"
 servers:
-- url: "http://127.0.0.1:8080"
+- url: "http://127.0.0.1:8081"
 paths:
+  /:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Hello World!"
+  /json/gson:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /json/kotlinx-serialization:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
   /users:
     post:
       description: "Create user"
@@ -81,30 +114,7 @@ paths:
             '*/*':
               schema:
                 type: "object"
-  /:
-    get:
-      description: ""
-      responses:
-        "200":
-          description: "OK"
-          content:
-            text/plain:
-              schema:
-                type: "string"
-              examples:
-                Example#1:
-                  value: "Hello World!"
-  /json/gson:
-    get:
-      description: ""
-      responses:
-        "200":
-          description: "OK"
-          content:
-            '*/*':
-              schema:
-                type: "string"
-  /json/kotlinx-serialization:
+  /scheduler:
     get:
       description: ""
       responses:
