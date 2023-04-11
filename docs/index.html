@@ -1569,7 +1569,7 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Default-schedulerGet-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
--H "Accept: text/plain"\
+-H "Accept: */*"\
 "http://127.0.0.1:8081/scheduler"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Default-schedulerGet-0-java">
@@ -1757,20 +1757,15 @@ except ApiException as e:
                                         var schemaWrapper = {
   "description" : "OK",
   "content" : {
-    "text/plain" : {
+    "*/*" : {
       "schema" : {
         "type" : "string",
-        "x-content-type" : "text/plain"
-      },
-      "examples" : {
-        "Example#1" : {
-          "value" : "调度任务开启了"
-        }
+        "x-content-type" : "*/*"
       }
     }
   }
 };
-                                        var schema = schemaWrapper.content["text/plain"].schema;
+                                        var schema = schemaWrapper.content["*/*"].schema;
                                         if (schema.$ref != null) {
                                           schema = defsParser.$refs.get(schema.$ref);
                                         } else {
