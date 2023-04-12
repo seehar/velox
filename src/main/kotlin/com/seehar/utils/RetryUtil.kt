@@ -1,14 +1,12 @@
 package com.seehar.utils
 
 import org.slf4j.LoggerFactory
-import java.util.concurrent.Callable
-import java.util.concurrent.ExecutorService
 
 
 /**
  * 重试
  */
-abstract class RetryUtil {
+abstract class RetryUtil<T> {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     private var retryTime = DEFAULT_RETRY_TIME
@@ -16,15 +14,15 @@ abstract class RetryUtil {
     // 重试的睡眠时间
     private var sleepTime = 0
 
-    fun setSleepTime(sleepTime: Int): RetryUtil {
+    fun setSleepTime(sleepTime: Int): RetryUtil<T> {
         require(sleepTime >= 0) { "sleepTime should equal or bigger than 0" }
         this.sleepTime = sleepTime
         return this
     }
 
-    fun setRetryTime(retryTime: Int): RetryUtil {
-        require(retryTime > 0) { "retryTime should bigger than 0" }
-        this.retryTime = retryTime
+    fun setRetryCount(retryCount: Int): RetryUtil<T> {
+        require(retryCount > 0) { "retryTime should bigger than 0" }
+        this.retryTime = retryCount
         return this
     }
 
@@ -37,24 +35,19 @@ abstract class RetryUtil {
      * @return
      */
     @Throws(Exception::class)
-    protected abstract fun doBiz(): Any?
+    protected abstract fun doBiz(): T
 
     @Throws(InterruptedException::class)
-    fun execute(): Any? {
-        for (i in 0 until retryTime) {
+    fun execute(): T? {
+        for (i in 0..retryTime) {
             try {
                 return doBiz()
             } catch (e: Exception) {
-                log.error("业务执行出现异常，e: $e")
+                log.error("业务执行出现异常，正在 $i/$retryTime 重试，e: $e")
                 Thread.sleep(sleepTime.toLong())
             }
         }
         return null
-    }
-
-    fun submit(executorService: ExecutorService?): Any {
-        requireNotNull(executorService) { "please choose executorService!" }
-        return executorService.submit(Callable { execute() } as Callable<*>)
     }
 
     companion object {
