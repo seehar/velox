@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class BaseSpiderTest {
+class BaseRequestTest {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     @Test

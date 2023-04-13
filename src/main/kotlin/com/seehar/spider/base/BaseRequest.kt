@@ -2,6 +2,8 @@ package com.seehar.spider.base
 import com.seehar.utils.RetryUtil
 import okhttp3.*
 import org.slf4j.LoggerFactory
+import java.net.InetSocketAddress
+import java.net.Proxy
 import java.util.concurrent.TimeUnit
 
 /**
@@ -12,6 +14,7 @@ import java.util.concurrent.TimeUnit
 class BaseRequest(timeout: Int = 30) {
     private val log = LoggerFactory.getLogger(this::class.java)
     private val client = OkHttpClient().newBuilder()
+        .proxy(Proxy(Proxy.Type.HTTP, InetSocketAddress("192.168.1.100", 8080)))
         .retryOnConnectionFailure(false)
         .connectTimeout(timeout.toLong(), TimeUnit.SECONDS)
         .build()
