@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit
 class BaseRequest(timeout: Int = 30) {
     private val log = LoggerFactory.getLogger(this::class.java)
     private val client = OkHttpClient().newBuilder()
-        .proxy(Proxy(Proxy.Type.HTTP, InetSocketAddress("192.168.1.100", 8080)))
         .retryOnConnectionFailure(false)
         .connectTimeout(timeout.toLong(), TimeUnit.SECONDS)
         .build()
@@ -25,7 +24,7 @@ class BaseRequest(timeout: Int = 30) {
      * @param url
      * @param method
      * @param params
-     * @param body
+     * @param data
      * @param headers
      * @param retryCount 重试次数
      * @param sleepTime 每次重试等待时间
@@ -36,7 +35,7 @@ class BaseRequest(timeout: Int = 30) {
         url: String,
         method: String = "GET",
         params: Map<String, Any> = mapOf(),
-        body: RequestBody? = null,
+        data: RequestBody? = null,
         headers: Map<String, String>? = null,
         retryCount: Int = 3,
         sleepTime: Int = 3000,
@@ -44,7 +43,7 @@ class BaseRequest(timeout: Int = 30) {
         val result = object : RetryUtil<Response>() {
             @Throws(Exception::class)
             override fun doBiz(): Response {
-                return doRequest(url = url, method = method, params = params, body = body, headers = headers)
+                return doRequest(url = url, method = method, params = params, data = data, headers = headers)
             }
         }
             .setRetryCount(retryCount)
@@ -60,7 +59,7 @@ class BaseRequest(timeout: Int = 30) {
      * @param url
      * @param params
      * @param method
-     * @param body
+     * @param data
      * @param headers
      * @return
      */
@@ -68,7 +67,7 @@ class BaseRequest(timeout: Int = 30) {
         url: String,
         params: Map<String, Any> = mapOf(),
         method: String = "GET",
-        body: RequestBody? = null,
+        data: RequestBody? = null,
         headers: Map<String, String>? = null
     ): Response {
         val httpBuilder = HttpUrl.parse(url)!!.newBuilder()
@@ -83,7 +82,7 @@ class BaseRequest(timeout: Int = 30) {
 
         val request = Request.Builder()
             .url(httpBuilder.build())
-            .method(method, body)
+            .method(method, data)
             .headers(Headers.of(currentHeaders))
             .build()
 
@@ -97,7 +96,7 @@ class BaseRequest(timeout: Int = 30) {
      *
      * @param url
      * @param params
-     * @param body
+     * @param data
      * @param headers
      * @param retryCount
      * @param sleepTime
@@ -106,7 +105,7 @@ class BaseRequest(timeout: Int = 30) {
     fun get(
         url: String,
         params: Map<String, Any> = mapOf(),
-        body: RequestBody? = null,
+        data: RequestBody? = null,
         headers: Map<String, String>? = null,
         retryCount: Int = 3,
         sleepTime: Int = 3000,
@@ -114,8 +113,8 @@ class BaseRequest(timeout: Int = 30) {
         return request(
             url = url,
             params = params,
+            data = data,
             method = "GET",
-            body = body,
             headers = headers,
             retryCount = retryCount,
             sleepTime = sleepTime
@@ -126,7 +125,7 @@ class BaseRequest(timeout: Int = 30) {
      * post 请求
      *
      * @param url
-     * @param body
+     * @param data
      * @param headers
      * @param retryCount
      * @param sleepTime
@@ -134,7 +133,7 @@ class BaseRequest(timeout: Int = 30) {
      */
     fun post(
         url: String,
-        body: RequestBody? = null,
+        data: Map<String, Any> = mapOf(),
         headers: Map<String, String>? = null,
         retryCount: Int = 3,
         sleepTime: Int = 3000,
@@ -142,10 +141,24 @@ class BaseRequest(timeout: Int = 30) {
         return request(
             url = url,
             method = "POST",
-            body = body,
+            data = handleRequestBody(data),
             headers = headers,
             retryCount = retryCount,
             sleepTime = sleepTime
         )
+    }
+
+    /**
+     * 处理 post 请求的参数
+     *
+     * @param data
+     * @return
+     */
+    private fun handleRequestBody(data: Map<String, Any>): RequestBody {
+        val body = FormBody.Builder()
+        for ((key, value) in data) {
+            body.add(key, value.toString())
+        }
+        return body.build()
     }
 }
