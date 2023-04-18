@@ -1,9 +1,11 @@
 package com.seehar.plugins
 
 import com.seehar.scheduler.SchedulerJob
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
 import org.quartz.JobBuilder
 import org.quartz.JobKey
 import org.quartz.SimpleScheduleBuilder

@@ -25,7 +25,7 @@ class BaseRequestTest {
         val response = request.post(url)
         val responseString = response?.body()?.string()
         log.info("response: $responseString")
-        assertTrue { response?.code() == 200}
+        assertTrue { response?.code() == 200 }
         assertNotNull(responseString)
     }
 }

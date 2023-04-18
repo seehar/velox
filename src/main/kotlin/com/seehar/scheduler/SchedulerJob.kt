@@ -6,7 +6,7 @@ import org.quartz.JobExecutionContext
 import org.slf4j.LoggerFactory
 
 @DisallowConcurrentExecution
-class SchedulerJob: Job {
+class SchedulerJob : Job {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     override fun execute(context: JobExecutionContext?) {
