@@ -33,7 +33,6 @@ fun Application.configureScheduler() {
     scheduler.scheduleJob(schedulerJob, schedulerJobTrigger)
     scheduler.start()
 
-
     routing {
         get("/scheduler") {
             val jobGroupNames = scheduler.jobGroupNames

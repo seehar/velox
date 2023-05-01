@@ -1,7 +1,13 @@
 package com.seehar.spider.base
 
 import com.seehar.utils.RetryUtil
-import okhttp3.*
+import okhttp3.FormBody
+import okhttp3.Headers
+import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.Response
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 
@@ -76,8 +82,8 @@ class BaseRequest(timeout: Int = 30) {
 
         val currentHeaders: Map<String, String> = headers ?: mapOf(
             "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
-                    "Chrome/111.0.0.0 Safari/537.36",
-            )
+                "Chrome/111.0.0.0 Safari/537.36",
+        )
 
         val request = Request.Builder()
             .url(httpBuilder.build())

@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        maven { url "https://maven.aliyun.com/repository/central" }
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
+    }
+    dependencies {
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:3.28.1"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32"
+    }
+}
+
 plugins {
     id 'com.diffplug.gradle.spotless' version '2.4.1'
     id 'org.jetbrains.kotlin.jvm' version '1.8.20'
@@ -19,10 +30,22 @@ repositories {
         url "https://maven.google.com"
     }
     google()
-    // jcenter()
     maven { url "https://jitpack.io" }
     mavenCentral()
-    // jcenter { url "https://jcenter.bintray.com/" }
+}
+
+spotless {
+    kotlin {
+        ktlint('0.43.2').userData([
+                indent_size             : "4",
+                continuation_indent_size: "4",
+                max_line_length         : "120",
+        ])
+    }
+    sql {
+        dbeaver()
+        target "**/resources/db/**/*.sql"
+    }
 }
 
 dependencies {
