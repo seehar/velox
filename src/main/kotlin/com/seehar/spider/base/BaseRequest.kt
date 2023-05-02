@@ -3,7 +3,8 @@ package com.seehar.spider.base
 import com.seehar.utils.RetryUtil
 import okhttp3.FormBody
 import okhttp3.Headers
-import okhttp3.HttpUrl
+import okhttp3.Headers.Companion.toHeaders
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -44,10 +45,10 @@ class BaseRequest(timeout: Int = 30) {
         headers: Map<String, String>? = null,
         retryCount: Int = 3,
         sleepTime: Int = 3000,
-    ): Response? {
-        val result = object : RetryUtil<Response>() {
+    ): Triple<String?, Headers, Request>? {
+        val result = object : RetryUtil<Triple<String?, Headers, Request>>() {
             @Throws(Exception::class)
-            override fun doBiz(): Response {
+            override fun doBiz(): Triple<String?, Headers, Request> {
                 return doRequest(url = url, method = method, params = params, data = data, headers = headers)
             }
         }
@@ -74,8 +75,8 @@ class BaseRequest(timeout: Int = 30) {
         method: String = "GET",
         data: RequestBody? = null,
         headers: Map<String, String>? = null
-    ): Response {
-        val httpBuilder = HttpUrl.parse(url)!!.newBuilder()
+    ): Triple<String?, Headers, Request> {
+        val httpBuilder = url.toHttpUrlOrNull()!!.newBuilder()
         for (param in params) {
             httpBuilder.addQueryParameter(param.key, param.value.toString())
         }
@@ -88,12 +89,17 @@ class BaseRequest(timeout: Int = 30) {
         val request = Request.Builder()
             .url(httpBuilder.build())
             .method(method, data)
-            .headers(Headers.of(currentHeaders))
+            .headers(currentHeaders.toHeaders())
             .build()
 
-        val response = client.newCall(request).execute()
-        log.debug("response code: ${response.code()}")
-        return response
+        var response: Response? = null
+        try {
+            response = client.newCall(request).execute()
+            log.debug("response code: ${response.code}")
+            return Triple(response.body?.string(), response.headers, response.request)
+        } finally {
+            response?.close()
+        }
     }
 
     /**
@@ -114,7 +120,7 @@ class BaseRequest(timeout: Int = 30) {
         headers: Map<String, String>? = null,
         retryCount: Int = 3,
         sleepTime: Int = 3000,
-    ): Response? {
+    ): Triple<String?, Headers, Request>? {
         return request(
             url = url,
             params = params,
@@ -142,7 +148,7 @@ class BaseRequest(timeout: Int = 30) {
         headers: Map<String, String>? = null,
         retryCount: Int = 3,
         sleepTime: Int = 3000,
-    ): Response? {
+    ): Triple<String?, Headers, Request>? {
         return request(
             url = url,
             method = "POST",

@@ -1,12 +1,26 @@
 <configuration>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} %-5level [%9.9t] %36.36logger{36} #%4line - %m%n</pattern>
         </encoder>
     </appender>
-    <root level="trace">
-        <appender-ref ref="STDOUT"/>
+
+    <appender name="logfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} %-5level [%9.9t] %36.36logger{36} #%4line - %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <file>./logs/common.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>./logs/common.%d.%i.log</fileNamePattern>
+            <maxHistory>100</maxHistory>
+            <maxFileSize>100MB</maxFileSize>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="console"/>
+        <appender-ref ref="logfile"/>
     </root>
-    <logger name="org.eclipse.jetty" level="INFO"/>
-    <logger name="io.netty" level="INFO"/>
 </configuration>

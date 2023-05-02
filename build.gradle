@@ -51,7 +51,12 @@ spotless {
 dependencies {
     implementation "io.ktor:ktor-server-core-jvm:$ktor_version"
     implementation "io.ktor:ktor-server-cors:$ktor_version"
+    implementation "io.ktor:ktor-client:$ktor_version"
     implementation "io.ktor:ktor-client-core:$ktor_version"
+    implementation "io.ktor:ktor-client-cio:$ktor_version"
+    implementation "io.ktor:ktor-client-okhttp:$ktor_version"
+    implementation "io.ktor:ktor-client-json:$ktor_version"
+    implementation "io.ktor:ktor-client-serialization:$ktor_version"
     implementation "io.ktor:ktor-server-openapi:$ktor_version"
     implementation "io.ktor:ktor-server-swagger:$ktor_version"
     implementation "io.ktor:ktor-server-content-negotiation-jvm:$ktor_version"
@@ -65,7 +70,8 @@ dependencies {
     implementation "io.ktor:ktor-server-config-yaml:$ktor_version"
     implementation 'io.ktor:ktor-server-cors-jvm:2.2.4'
     implementation "org.quartz-scheduler:quartz:2.3.2"
-    implementation "com.squareup.okhttp3:okhttp:3.14.9"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     testImplementation "io.ktor:ktor-server-tests-jvm:$ktor_version"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 }
