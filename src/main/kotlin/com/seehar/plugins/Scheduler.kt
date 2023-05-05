@@ -1,36 +1,22 @@
 package com.seehar.plugins
 
 import com.seehar.scheduler.SchedulerJob
+import com.seehar.scheduler.SchedulerPoolJob
+import com.seehar.utils.SchedulerUtil
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
-import org.quartz.JobBuilder
 import org.quartz.JobKey
-import org.quartz.SimpleScheduleBuilder
-import org.quartz.TriggerBuilder
 import org.quartz.impl.StdSchedulerFactory
 import org.quartz.impl.matchers.GroupMatcher
 
 fun Application.configureScheduler() {
     val scheduler = StdSchedulerFactory().scheduler
-
-    val schedulerJob = JobBuilder.newJob(SchedulerJob::class.java)
-        .withIdentity("schedulerJobName", "test")
-        .build()
-
-    val schedulerJobTrigger = TriggerBuilder.newTrigger()
-        .withIdentity("schedulerJobTrigger", "test")
-        .startNow()
-        .withSchedule(
-            SimpleScheduleBuilder.simpleSchedule()
-                .withIntervalInSeconds(5)
-                .repeatForever()
-        )
-        .build()
-
-    scheduler.scheduleJob(schedulerJob, schedulerJobTrigger)
+    val taskGroup = "test"
+    SchedulerUtil.addJob(scheduler, "SchedulerJob", taskGroup, SchedulerJob::class.java)
+    SchedulerUtil.addJob(scheduler, "SchedulerPoolJob", taskGroup, SchedulerPoolJob::class.java)
     scheduler.start()
 
     routing {
